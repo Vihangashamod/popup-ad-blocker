@@ -44,7 +44,14 @@ const allSites = () => chrome.storage.local.get({ extraSites: [], removedSites: 
 // scripts in alphabetical order of their ids, hence the 1-/2- prefixes.
 let scriptQueue = Promise.resolve();
 const syncPageScripts = () => (scriptQueue = scriptQueue.then(async () => {
-  const { removedSites = [] } = await chrome.storage.local.get({ removedSites: [] });
+  let { removedSites = [] } = await chrome.storage.local.get({ removedSites: [] });
+  // Drop removals of sites that are no longer built in
+  const builtinNow = Array.isArray(self.BLOCK_SITES) ? self.BLOCK_SITES : [];
+  const stillBuiltin = removedSites.filter(s => builtinNow.includes(s));
+  if (stillBuiltin.length !== removedSites.length) {
+    removedSites = stillBuiltin;
+    await chrome.storage.local.set({ removedSites });
+  }
   const wanted = [];
   if (removedSites.length) {
     wanted.push({

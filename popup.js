@@ -412,7 +412,10 @@ const renderAll = () => {
 // Initial Setup
 Promise.all([getExtra(), getRemoved()]).then(([extra, removed]) => {
   cachedExtraSites = extra;
-  cachedRemoved = removed;
+  // Forget removals of sites that are no longer in sites.js, so they don't show up as
+  // "removed built-in sites" waiting to be restored
+  cachedRemoved = removed.filter(s => builtin.includes(s));
+  if (cachedRemoved.length !== removed.length) setRemoved(cachedRemoved);
   renderAll();
 });
 loadStats();
