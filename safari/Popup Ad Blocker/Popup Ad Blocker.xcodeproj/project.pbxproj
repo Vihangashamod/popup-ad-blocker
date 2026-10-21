@@ -1,0 +1,593 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B9CD15203082408E0038733C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CD151F3082408E0038733C /* AppDelegate.swift */; };
+		B9CD15243082408E0038733C /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = B9CD15223082408E0038733C /* Main.html */; };
+		B9CD15263082408E0038733C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B9CD15253082408E0038733C /* Icon.png */; };
+		B9CD15283082408E0038733C /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = B9CD15273082408E0038733C /* Style.css */; };
+		B9CD152A3082408E0038733C /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = B9CD15293082408E0038733C /* Script.js */; };
+		B9CD152C3082408E0038733C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CD152B3082408E0038733C /* ViewController.swift */; };
+		B9CD152F3082408E0038733C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B9CD152D3082408E0038733C /* Main.storyboard */; };
+		B9CD15313082408F0038733C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B9CD15303082408F0038733C /* Assets.xcassets */; };
+		B9CD15383082408F0038733C /* Popup Ad Blocker Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B9CD15373082408F0038733C /* Popup Ad Blocker Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B9CD153D3082408F0038733C /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CD153C3082408F0038733C /* SafariWebExtensionHandler.swift */; };
+		B9CD1551308240920038733C /* nopopup.js in Resources */ = {isa = PBXBuildFile; fileRef = B9CD1549308240920038733C /* nopopup.js */; };
+		B9CD1552308240920038733C /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = B9CD154A308240920038733C /* background.js */; };
+		B9CD1556308240920038733C /* rules.json in Resources */ = {isa = PBXBuildFile; fileRef = B9CD154E308240920038733C /* rules.json */; };
+		B9CD1557308240920038733C /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = B9CD154F308240920038733C /* manifest.json */; };
+		B9CD1558308240920038733C /* sites.js in Resources */ = {isa = PBXBuildFile; fileRef = B9CD1550308240920038733C /* sites.js */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B9CD15393082408F0038733C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9CD15143082408E0038733C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B9CD15363082408F0038733C;
+			remoteInfo = "Popup Ad Blocker Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B9CD15443082408F0038733C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				B9CD15383082408F0038733C /* Popup Ad Blocker Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		B9CD151C3082408E0038733C /* Popup Ad Blocker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Popup Ad Blocker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9CD151F3082408E0038733C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B9CD15233082408E0038733C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
+		B9CD15253082408E0038733C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		B9CD15273082408E0038733C /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		B9CD15293082408E0038733C /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		B9CD152B3082408E0038733C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B9CD152E3082408E0038733C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B9CD15303082408F0038733C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B9CD15323082408F0038733C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B9CD15373082408F0038733C /* Popup Ad Blocker Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Popup Ad Blocker Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9CD153C3082408F0038733C /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		B9CD153E3082408F0038733C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B9CD1549308240920038733C /* nopopup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = nopopup.js; path = ../../../nopopup.js; sourceTree = "<group>"; };
+		B9CD154A308240920038733C /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = background.js; path = ../../../background.js; sourceTree = "<group>"; };
+		B9CD154E308240920038733C /* rules.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = rules.json; path = ../../../rules.json; sourceTree = "<group>"; };
+		B9CD154F308240920038733C /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../../manifest.json; sourceTree = "<group>"; };
+		B9CD1550308240920038733C /* sites.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = sites.js; path = ../../../sites.js; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B9CD15193082408E0038733C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		B9CD15343082408F0038733C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B9CD15133082408E0038733C = {
+			isa = PBXGroup;
+			children = (
+				B9CD151E3082408E0038733C /* Popup Ad Blocker */,
+				B9CD153B3082408F0038733C /* Popup Ad Blocker Extension */,
+				B9CD151D3082408E0038733C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B9CD151D3082408E0038733C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B9CD151C3082408E0038733C /* Popup Ad Blocker.app */,
+				B9CD15373082408F0038733C /* Popup Ad Blocker Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B9CD151E3082408E0038733C /* Popup Ad Blocker */ = {
+			isa = PBXGroup;
+			children = (
+				B9CD151F3082408E0038733C /* AppDelegate.swift */,
+				B9CD152B3082408E0038733C /* ViewController.swift */,
+				B9CD152D3082408E0038733C /* Main.storyboard */,
+				B9CD15303082408F0038733C /* Assets.xcassets */,
+				B9CD15323082408F0038733C /* Info.plist */,
+				B9CD15213082408E0038733C /* Resources */,
+			);
+			path = "Popup Ad Blocker";
+			sourceTree = "<group>";
+		};
+		B9CD15213082408E0038733C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B9CD15223082408E0038733C /* Main.html */,
+				B9CD15253082408E0038733C /* Icon.png */,
+				B9CD15273082408E0038733C /* Style.css */,
+				B9CD15293082408E0038733C /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B9CD153B3082408F0038733C /* Popup Ad Blocker Extension */ = {
+			isa = PBXGroup;
+			children = (
+				B9CD1548308240920038733C /* Resources */,
+				B9CD153C3082408F0038733C /* SafariWebExtensionHandler.swift */,
+				B9CD153E3082408F0038733C /* Info.plist */,
+			);
+			path = "Popup Ad Blocker Extension";
+			sourceTree = "<group>";
+		};
+		B9CD1548308240920038733C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B9CD1549308240920038733C /* nopopup.js */,
+				B9CD154A308240920038733C /* background.js */,
+				B9CD154E308240920038733C /* rules.json */,
+				B9CD154F308240920038733C /* manifest.json */,
+				B9CD1550308240920038733C /* sites.js */,
+			);
+			name = Resources;
+			path = "Popup Ad Blocker Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B9CD151B3082408E0038733C /* Popup Ad Blocker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9CD15453082408F0038733C /* Build configuration list for PBXNativeTarget "Popup Ad Blocker" */;
+			buildPhases = (
+				B9CD15183082408E0038733C /* Sources */,
+				B9CD15193082408E0038733C /* Frameworks */,
+				B9CD151A3082408E0038733C /* Resources */,
+				B9CD15443082408F0038733C /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B9CD153A3082408F0038733C /* PBXTargetDependency */,
+			);
+			name = "Popup Ad Blocker";
+			productName = "Popup Ad Blocker";
+			productReference = B9CD151C3082408E0038733C /* Popup Ad Blocker.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B9CD15363082408F0038733C /* Popup Ad Blocker Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9CD15413082408F0038733C /* Build configuration list for PBXNativeTarget "Popup Ad Blocker Extension" */;
+			buildPhases = (
+				B9CD15333082408F0038733C /* Sources */,
+				B9CD15343082408F0038733C /* Frameworks */,
+				B9CD15353082408F0038733C /* Resources */,
+			);
+			buildRules = (
+			);
+			name = "Popup Ad Blocker Extension";
+			productName = "Popup Ad Blocker Extension";
+			productReference = B9CD15373082408F0038733C /* Popup Ad Blocker Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B9CD15143082408E0038733C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2710;
+				LastUpgradeCheck = 2710;
+				TargetAttributes = {
+					B9CD151B3082408E0038733C = {
+						CreatedOnToolsVersion = 27.1;
+					};
+					B9CD15363082408F0038733C = {
+						CreatedOnToolsVersion = 27.1;
+					};
+				};
+			};
+			buildConfigurationList = B9CD15173082408E0038733C /* Build configuration list for PBXProject "Popup Ad Blocker" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B9CD15133082408E0038733C;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = B9CD151D3082408E0038733C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B9CD151B3082408E0038733C /* Popup Ad Blocker */,
+				B9CD15363082408F0038733C /* Popup Ad Blocker Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B9CD151A3082408E0038733C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				B9CD15263082408E0038733C /* Icon.png in Resources */,
+				B9CD152F3082408E0038733C /* Main.storyboard in Resources */,
+				B9CD152A3082408E0038733C /* Script.js in Resources */,
+				B9CD15243082408E0038733C /* Main.html in Resources */,
+				B9CD15313082408F0038733C /* Assets.xcassets in Resources */,
+				B9CD15283082408E0038733C /* Style.css in Resources */,
+			);
+		};
+		B9CD15353082408F0038733C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				B9CD1557308240920038733C /* manifest.json in Resources */,
+				B9CD1558308240920038733C /* sites.js in Resources */,
+				B9CD1552308240920038733C /* background.js in Resources */,
+				B9CD1556308240920038733C /* rules.json in Resources */,
+				B9CD1551308240920038733C /* nopopup.js in Resources */,
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B9CD15183082408E0038733C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				B9CD152C3082408E0038733C /* ViewController.swift in Sources */,
+				B9CD15203082408E0038733C /* AppDelegate.swift in Sources */,
+			);
+		};
+		B9CD15333082408F0038733C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				B9CD153D3082408F0038733C /* SafariWebExtensionHandler.swift in Sources */,
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B9CD153A3082408F0038733C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B9CD15363082408F0038733C /* Popup Ad Blocker Extension */;
+			targetProxy = B9CD15393082408F0038733C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B9CD15223082408E0038733C /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B9CD15233082408E0038733C /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		B9CD152D3082408E0038733C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B9CD152E3082408E0038733C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B9CD153F3082408F0038733C /* Debug configuration for PBXProject "Popup Ad Blocker" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.6;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B9CD15403082408F0038733C /* Release configuration for PBXProject "Popup Ad Blocker" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.6;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		B9CD15423082408F0038733C /* Debug configuration for PBXNativeTarget "Popup Ad Blocker Extension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Popup Ad Blocker Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Popup Ad Blocker Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.codebysanka.PopupAdBlocker.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B9CD15433082408F0038733C /* Release configuration for PBXNativeTarget "Popup Ad Blocker Extension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Popup Ad Blocker Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Popup Ad Blocker Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.codebysanka.PopupAdBlocker.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B9CD15463082408F0038733C /* Debug configuration for PBXNativeTarget "Popup Ad Blocker" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Popup Ad Blocker/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Popup Ad Blocker";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				INFOPLIST_KEY_NSViewGestureRecognizerIsExclusive = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.codebysanka.PopupAdBlocker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B9CD15473082408F0038733C /* Release configuration for PBXNativeTarget "Popup Ad Blocker" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Popup Ad Blocker/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Popup Ad Blocker";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				INFOPLIST_KEY_NSViewGestureRecognizerIsExclusive = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.codebysanka.PopupAdBlocker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B9CD15173082408E0038733C /* Build configuration list for PBXProject "Popup Ad Blocker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9CD153F3082408F0038733C /* Debug configuration for PBXProject "Popup Ad Blocker" */,
+				B9CD15403082408F0038733C /* Release configuration for PBXProject "Popup Ad Blocker" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		B9CD15413082408F0038733C /* Build configuration list for PBXNativeTarget "Popup Ad Blocker Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9CD15423082408F0038733C /* Debug configuration for PBXNativeTarget "Popup Ad Blocker Extension" */,
+				B9CD15433082408F0038733C /* Release configuration for PBXNativeTarget "Popup Ad Blocker Extension" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		B9CD15453082408F0038733C /* Build configuration list for PBXNativeTarget "Popup Ad Blocker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9CD15463082408F0038733C /* Debug configuration for PBXNativeTarget "Popup Ad Blocker" */,
+				B9CD15473082408F0038733C /* Release configuration for PBXNativeTarget "Popup Ad Blocker" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B9CD15143082408E0038733C /* Project object */;
+	validationLevel = 1;
+}

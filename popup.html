@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Popup & Ad Blocker Pro</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-glow: rgba(59, 130, 246, 0.25);
+    --success: #10b981;
+    --success-bg: rgba(16, 185, 129, 0.15);
+    --danger: #ef4444;
+    --danger-bg: rgba(239, 68, 68, 0.15);
+    --warning: #f59e0b;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 380px;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font);
+    font-size: 13px;
+    line-height: 1.5;
+    user-select: none;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--card-border);
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    box-shadow: 0 0 12px var(--primary-glow);
+  }
+  .title-wrap h1 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pro-badge {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .version-tag {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Navigation Tabs */
+  .nav-tabs {
+    display: flex;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 6px 12px 0;
+    gap: 4px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 7px 4px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .tab-btn:hover { color: var(--text-main); }
+  .tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+
+  /* Tab Content */
+  .tab-panel {
+    display: none;
+    padding: 14px 16px;
+  }
+  .tab-panel.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(8px);
+  }
+
+  /* Active Site Widget */
+  .active-site-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .site-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .site-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .site-domain {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 12px;
+    margin-top: 3px;
+  }
+  .status-badge.on {
+    background: var(--success-bg);
+    color: var(--success);
+  }
+  .status-badge.off {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--text-muted);
+  }
+
+  /* Button Styles */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 7px;
+    border: none;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-toggle-on {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  .btn-toggle-on:hover { background: rgba(16, 185, 129, 0.3); }
+  .btn-toggle-off {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+  .btn-toggle-off:hover { background: rgba(59, 130, 246, 0.3); }
+  .btn-block { width: 100%; padding: 9px; font-size: 13px; }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat-box {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  /* Updater Panel Styles */
+  .updater-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .updater-icon {
+    font-size: 20px;
+  }
+  .updater-title {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .updater-desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-name { color: var(--text-muted); }
+  .info-val { font-weight: 600; color: #fff; }
+
+  .update-feedback {
+    margin-top: 8px;
+    font-size: 11px;
+    text-align: center;
+    min-height: 16px;
+  }
+  .update-feedback.success { color: var(--success); }
+  .update-feedback.error { color: var(--danger); }
+
+  /* Spinner */
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Sites List */
+  .search-wrap {
+    margin-bottom: 10px;
+  }
+  .input-text {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--card-border);
+    background: rgba(15, 23, 42, 0.7);
+    color: #fff;
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-text:focus {
+    border-color: var(--primary);
+  }
+
+  .section-title {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin: 12px 0 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .badge-count {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 9.5px;
+  }
+
+  .site-list {
+    list-style: none;
+    max-height: 140px;
+    overflow-y: auto;
+    border-radius: 6px;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--card-border);
+  }
+  .site-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 12px;
+  }
+  .site-list li:last-child { border-bottom: none; }
+  .site-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .btn-remove {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 4px;
+    transition: color 0.2s;
+  }
+  .btn-remove:hover { color: var(--danger); }
+  .empty-msg {
+    text-align: center;
+    padding: 12px;
+    color: var(--text-muted);
+    font-size: 11.5px;
+  }
+
+  .add-form {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .error-text {
+    color: var(--danger);
+    font-size: 11px;
+    margin-top: 4px;
+    min-height: 14px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+
+  /* Footer */
+  .footer {
+    padding: 10px 16px;
+    border-top: 1px solid var(--card-border);
+    background: rgba(15, 23, 42, 0.7);
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">
+      <img src="icons/icon48.png" alt="Logo" class="logo-icon">
+      <div class="title-wrap">
+        <h1>Popup Blocker <span class="pro-badge">PRO</span></h1>
+      </div>
+    </div>
+    <span class="version-tag">v2.0.0</span>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="tabBtnDashboard" data-tab="tabDashboard">Dashboard</button>
+    <button class="tab-btn" id="tabBtnUpdater" data-tab="tabUpdater">Ad Filter Lists</button>
+    <button class="tab-btn" id="tabBtnSites" data-tab="tabSites">Protected Sites</button>
+  </div>
+
+  <!-- TAB 1: DASHBOARD -->
+  <div class="tab-panel active" id="tabDashboard">
+    <!-- Active Site Quick Widget -->
+    <div class="card active-site-card">
+      <div class="site-info">
+        <div class="site-label">Current Website</div>
+        <div class="site-domain" id="currentDomain">Detecting...</div>
+        <div class="status-badge on" id="siteStatusBadge">Checking...</div>
+      </div>
+      <button class="btn btn-toggle-off" id="toggleCurrentSiteBtn">Protect</button>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-value" id="statPopups">0</div>
+        <div class="stat-label">Popups Blocked</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="statLinks">0</div>
+        <div class="stat-label">Ad Clicks Defused</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="statFilters">3,600+</div>
+        <div class="stat-label">Ad Domains</div>
+      </div>
+    </div>
+
+    <!-- Quick Update Action Card -->
+    <div class="card">
+      <div class="updater-header">
+        <span class="updater-icon">⚡</span>
+        <div>
+          <div class="updater-title">Dynamic Ad-Rule Engine</div>
+          <div style="font-size: 11px; color: var(--text-muted);" id="quickLastUpdated">Checking status...</div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" id="quickUpdateBtn">
+        <span id="quickUpdateIcon">⟳</span> Check & Update Lists
+      </button>
+      <div class="update-feedback" id="quickFeedback"></div>
+    </div>
+  </div>
+
+  <!-- TAB 2: AD FILTER LISTS & UPDATER -->
+  <div class="tab-panel" id="tabUpdater">
+    <div class="card">
+      <div class="updater-header">
+        <span class="updater-icon">🛡️</span>
+        <div>
+          <div class="updater-title">Ad & Pop-under Blocker Database</div>
+          <div class="status-badge on" style="margin-top: 2px;">DeclarativeNetRequest Active</div>
+        </div>
+      </div>
+      <p class="updater-desc">
+        Blocks ad domains, pop-unders, rotating trackers, and malicious redirects network-wide before they ever load.
+      </p>
+
+      <div class="info-row">
+        <span class="info-name">Active Ad Domains:</span>
+        <span class="info-val" id="fullAdCount">3,677 domains</span>
+      </div>
+      <div class="info-row">
+        <span class="info-name">Pattern & Regex Rules:</span>
+        <span class="info-val">20 active</span>
+      </div>
+      <div class="info-row">
+        <span class="info-name">Update Feed Source:</span>
+        <span class="info-val" id="feedSourceName">Peter Lowe + Pro Database</span>
+      </div>
+      <div class="info-row">
+        <span class="info-name">Last Updated:</span>
+        <span class="info-val" id="fullLastUpdated">Just now</span>
+      </div>
+      <div class="info-row">
+        <span class="info-name">Auto-Update:</span>
+        <span class="info-val" style="color: var(--success);">Daily (Every 24h)</span>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <button class="btn btn-primary btn-block" id="fullUpdateBtn">
+          <span id="fullUpdateIcon">⟳</span> Check & Update Ad Lists Now
+        </button>
+        <div class="update-feedback" id="fullFeedback"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: PROTECTED SITES -->
+  <div class="tab-panel" id="tabSites">
+    <div class="search-wrap">
+      <input type="text" class="input-text" id="siteSearchInput" placeholder="Search protected sites..." autocomplete="off">
+    </div>
+
+    <!-- Extra Added Sites -->
+    <div class="section-title">
+      <span>Added by You (Instant Protection)</span>
+      <span class="badge-count" id="extraCount">0</span>
+    </div>
+    <ul class="site-list" id="extra"></ul>
+    <p class="empty-msg" id="extraEmpty">No custom sites added yet.</p>
+
+    <!-- Add New Site Form -->
+    <form class="add-form" id="addForm">
+      <input type="text" class="input-text" id="addInput" placeholder="e.g. streaminghub.to" autocomplete="off" spellcheck="false">
+      <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+    <div class="error-text" id="addError"></div>
+
+    <!-- Built-in Sites -->
+    <div class="section-title" style="margin-top: 14px;">
+      <span>Built-in Streaming Sites (sites.js)</span>
+      <span class="badge-count" id="builtinCount">0</span>
+    </div>
+    <ul class="site-list" id="builtin" style="max-height: 110px;"></ul>
+
+    <button type="button" class="btn btn-block" id="copyBtn" style="margin-top: 10px; background: rgba(255,255,255,0.06); color: #fff;">
+      Copy full list for sites.js
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>Popup & Ad Blocker Pro</span>
+    <span style="color: var(--success);">● Active</span>
+  </div>
+
+  <script src="sites.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
