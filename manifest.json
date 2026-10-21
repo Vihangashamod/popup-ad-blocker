@@ -1,11 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Popup & Ad Blocker Pro",
-  "version": "2.0.0",
-  "description": "Stops pop-up/pop-under tabs, ad links, fake player buttons and rotating ad networks on video streaming and ad-heavy sites.",
+  "version": "3.0.0",
+  "description": "Blocks ads, trackers and pop-ups on every site, including YouTube, with extra protection against pop-unders and fake player buttons on streaming sites.",
+  "minimum_chrome_version": "121",
   "permissions": [
     "declarativeNetRequest",
     "webNavigation",
+    "scripting",
     "storage",
     "alarms",
     "activeTab"
@@ -35,9 +37,19 @@
   "declarative_net_request": {
     "rule_resources": [
       {
-        "id": "ads",
+        "id": "easylist",
         "enabled": true,
-        "path": "rules.json"
+        "path": "rulesets/easylist.json"
+      },
+      {
+        "id": "easyprivacy",
+        "enabled": true,
+        "path": "rulesets/easyprivacy.json"
+      },
+      {
+        "id": "custom",
+        "enabled": true,
+        "path": "rulesets/custom.json"
       }
     ]
   },

@@ -3,3 +3,4 @@ _metadata/
 xcuserdata/
 build/
 DerivedData/
+node_modules/

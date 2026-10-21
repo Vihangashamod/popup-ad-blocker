@@ -441,6 +441,30 @@
   }
   .watch-opts label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 
+  /* Pause switch + filter list toggles */
+  .switch { position: relative; flex: none; width: 38px; height: 22px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; inset: 0; cursor: pointer;
+    background: rgba(148, 163, 184, 0.3); border-radius: 22px; transition: background 0.2s;
+  }
+  .slider::before {
+    content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px;
+    background: #fff; border-radius: 50%; transition: transform 0.2s;
+  }
+  .switch input:checked + .slider { background: var(--success); }
+  .switch input:checked + .slider::before { transform: translateX(16px); }
+  .switch input:disabled + .slider { opacity: 0.4; cursor: default; }
+  .page-count { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .page-count b { color: var(--text-main); }
+  .reload-hint { display: none; margin-top: 8px; font-size: 11px; color: var(--warning); align-items: center; gap: 8px; }
+  .reload-hint.show { display: flex; }
+  .reload-hint button { padding: 3px 9px; font-size: 11px; }
+  .list-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .list-row:last-of-type { border-bottom: none; }
+  .list-name { font-size: 12.5px; font-weight: 600; }
+  .list-desc { font-size: 11px; color: var(--text-muted); }
+
   /* Scrollbar */
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -470,7 +494,7 @@
         <h1>Popup Blocker <span class="pro-badge">PRO</span></h1>
       </div>
     </div>
-    <span class="version-tag">v2.0.0</span>
+    <span class="version-tag" id="versionTag">v3.0.0</span>
   </div>
 
   <!-- Navigation Tabs -->
@@ -501,10 +525,29 @@
 
   <!-- TAB 1: DASHBOARD -->
   <div class="tab-panel active" id="tabDashboard">
-    <!-- Active Site Quick Widget -->
+    <!-- Ad blocking on/off for this site -->
+    <div class="card">
+      <div class="active-site-card">
+        <div class="site-info">
+          <div class="site-label">Ad blocking on this site</div>
+          <div class="site-domain" id="pauseDomain">Detecting...</div>
+          <div class="page-count" id="pageBlocked"></div>
+        </div>
+        <label class="switch" title="Turn ad blocking on or off for this site">
+          <input type="checkbox" id="pauseToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="reload-hint" id="reloadHint">
+        <span>Reload the page to apply.</span>
+        <button class="btn btn-primary" id="reloadBtn" type="button">Reload</button>
+      </div>
+    </div>
+
+    <!-- Strict pop-up protection for this site -->
     <div class="card active-site-card">
       <div class="site-info">
-        <div class="site-label">Current Website</div>
+        <div class="site-label">Strict pop-up protection</div>
         <div class="site-domain" id="currentDomain">Detecting...</div>
         <div class="status-badge on" id="siteStatusBadge">Checking...</div>
       </div>
@@ -522,8 +565,8 @@
         <div class="stat-label">Ad Clicks Defused</div>
       </div>
       <div class="stat-box">
-        <div class="stat-value" id="statFilters">3,600+</div>
-        <div class="stat-label">Ad Domains</div>
+        <div class="stat-value" id="statFilters">-</div>
+        <div class="stat-label">Filters Active</div>
       </div>
     </div>
 
@@ -547,9 +590,35 @@
   <div class="tab-panel" id="tabUpdater">
     <div class="card">
       <div class="updater-header">
+        <span class="updater-icon">🧱</span>
+        <div>
+          <div class="updater-title">Filter lists</div>
+          <div style="font-size: 11px; color: var(--text-muted);" id="listsBuilt">Built-in, works offline</div>
+        </div>
+      </div>
+      <div class="list-row">
+        <div><div class="list-name">EasyList</div><div class="list-desc" id="descEasylist">Ads on every site</div></div>
+        <label class="switch"><input type="checkbox" data-ruleset="easylist" checked><span class="slider"></span></label>
+      </div>
+      <div class="list-row">
+        <div><div class="list-name">EasyPrivacy</div><div class="list-desc" id="descEasyprivacy">Trackers and analytics</div></div>
+        <label class="switch"><input type="checkbox" data-ruleset="easyprivacy" checked><span class="slider"></span></label>
+      </div>
+      <div class="list-row">
+        <div><div class="list-name">Custom (YouTube + pop-ups)</div><div class="list-desc" id="descCustom">Our own rules</div></div>
+        <label class="switch"><input type="checkbox" data-ruleset="custom" checked><span class="slider"></span></label>
+      </div>
+      <div class="info-row" style="margin-top: 6px;">
+        <span class="info-name">Element hiding:</span>
+        <span class="info-val" id="cosmeticCount">-</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="updater-header">
         <span class="updater-icon">🛡️</span>
         <div>
-          <div class="updater-title">Ad & Pop-under Blocker Database</div>
+          <div class="updater-title">Live ad-server list</div>
           <div class="status-badge on" style="margin-top: 2px;">DeclarativeNetRequest Active</div>
         </div>
       </div>

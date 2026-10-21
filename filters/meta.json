@@ -1,0 +1,21 @@
+{
+  "builtAt": "2026-10-21T12:16:35.162Z",
+  "rulesets": {
+    "easylist": {
+      "rules": 6501,
+      "filters": 58804
+    },
+    "easyprivacy": {
+      "rules": 9151,
+      "filters": 56307
+    },
+    "custom": {
+      "rules": 15,
+      "filters": 15
+    }
+  },
+  "cosmetic": {
+    "generic": 13634,
+    "sites": 7811
+  }
+}

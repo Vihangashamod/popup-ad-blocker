@@ -7,6 +7,8 @@
 //   4. Hides banner slots, fake player overlays and neutralizes full-screen transparent click traps
 (() => {
   const sites = Array.isArray(self.BLOCK_SITES) ? [...self.BLOCK_SITES] : [];
+  const forced = self.__PAB_FORCE__ === true; // set by force-flag.js for user-added sites
+  delete self.__PAB_FORCE__;
   delete self.BLOCK_SITES;
   delete self.SITE_GROUPS; // don't leave the site list visible to the page
 
@@ -114,9 +116,14 @@
         return origClick.call(this);
       };
 
+      // Audit fix: events built with new MouseEvent('click') are not cancelable by default, so
+      // preventDefault() in a listener could not stop them. Don't dispatch them at all.
       const origDispatch = EventTarget.prototype.dispatchEvent;
       EventTarget.prototype.dispatchEvent = function (e) {
-        if (this instanceof HTMLAnchorElement && e?.type === 'click') guard(this);
+        if (this instanceof HTMLAnchorElement && e?.type === 'click' && isAdLink(this)) {
+          notifyBlock('link');
+          return false;
+        }
         return origDispatch.call(this, e);
       };
     } catch {}
@@ -162,7 +169,9 @@
               parseInt(s.zIndex || '0', 10) > 100000 &&
               (parseFloat(s.opacity) < 0.1 || s.backgroundColor === 'rgba(0, 0, 0, 0)' || s.backgroundColor === 'transparent') &&
               el.offsetWidth >= window.innerWidth * 0.7 &&
-              el.offsetHeight >= window.innerHeight * 0.7) {
+              el.offsetHeight >= window.innerHeight * 0.7 &&
+              // Audit fix: never hide the real player on embed hosts
+              !el.querySelector('video, iframe, canvas')) {
             el.style.setProperty('display', 'none', 'important');
             el.style.setProperty('pointer-events', 'none', 'important');
             notifyBlock('element');
@@ -177,9 +186,23 @@
       neutralizeOverlays();
     }
 
+    // Audit fix: this used to run getComputedStyle on every DOM change, which video players
+    // trigger constantly. Now it runs at most once per animation frame, and only when nodes
+    // were added directly to <body> (where the click traps live).
+    let scheduled = false;
+    const schedule = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => { scheduled = false; neutralizeOverlays(); });
+    };
     try {
-      const observer = new MutationObserver(() => neutralizeOverlays());
-      observer.observe(document.documentElement, { childList: true, subtree: true });
+      const observer = new MutationObserver((records) => {
+        for (const r of records) {
+          if (r.target === document.body && r.addedNodes.length) { schedule(); return; }
+        }
+      });
+      const start = () => observer.observe(document.body, { childList: true });
+      document.body ? start() : document.addEventListener('DOMContentLoaded', start, { once: true });
     } catch {}
   };
 
@@ -196,9 +219,14 @@
   };
 
   // Immediate check against built-in sites
-  if (isMatched(topSite, sites) || isMatched(location.hostname, sites)) {
+  if (forced || isMatched(topSite, sites) || isMatched(location.hostname, sites)) {
     init();
   }
+
+  // Hook for force-flag.js (user-added sites), which runs right after this file at document_start
+  try {
+    Object.defineProperty(self, Symbol.for('pab.protect'), { value: init, configurable: true });
+  } catch {}
 
   // Also listen for dynamic sites sent from content-bridge.js
   const checkDynamic = (extraList) => {

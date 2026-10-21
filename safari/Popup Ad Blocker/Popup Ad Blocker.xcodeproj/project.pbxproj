@@ -19,9 +19,17 @@
 		B9CD153D3082408F0038733C /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CD153C3082408F0038733C /* SafariWebExtensionHandler.swift */; };
 		B9CD1551308240920038733C /* nopopup.js in Resources */ = {isa = PBXBuildFile; fileRef = B9CD1549308240920038733C /* nopopup.js */; };
 		B9CD1552308240920038733C /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = B9CD154A308240920038733C /* background.js */; };
-		B9CD1556308240920038733C /* rules.json in Resources */ = {isa = PBXBuildFile; fileRef = B9CD154E308240920038733C /* rules.json */; };
 		B9CD1557308240920038733C /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = B9CD154F308240920038733C /* manifest.json */; };
 		B9CD1558308240920038733C /* sites.js in Resources */ = {isa = PBXBuildFile; fileRef = B9CD1550308240920038733C /* sites.js */; };
+		C0DEB100308240920038733C /* content-bridge.js in Resources */ = {isa = PBXBuildFile; fileRef = C0DEA100308240920038733C /* content-bridge.js */; };
+		C0DEB101308240920038733C /* default-ad-domains.js in Resources */ = {isa = PBXBuildFile; fileRef = C0DEA101308240920038733C /* default-ad-domains.js */; };
+		C0DEB102308240920038733C /* force-flag.js in Resources */ = {isa = PBXBuildFile; fileRef = C0DEA102308240920038733C /* force-flag.js */; };
+		C0DEB103308240920038733C /* youtube.js in Resources */ = {isa = PBXBuildFile; fileRef = C0DEA103308240920038733C /* youtube.js */; };
+		C0DEB104308240920038733C /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = C0DEA104308240920038733C /* popup.html */; };
+		C0DEB105308240920038733C /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = C0DEA105308240920038733C /* popup.js */; };
+		C0DEB106308240920038733C /* icons in Resources */ = {isa = PBXBuildFile; fileRef = C0DEA106308240920038733C /* icons */; };
+		C0DEB107308240920038733C /* rulesets in Resources */ = {isa = PBXBuildFile; fileRef = C0DEA107308240920038733C /* rulesets */; };
+		C0DEB108308240920038733C /* filters in Resources */ = {isa = PBXBuildFile; fileRef = C0DEA108308240920038733C /* filters */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,9 +70,17 @@
 		B9CD153E3082408F0038733C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B9CD1549308240920038733C /* nopopup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = nopopup.js; path = ../../../nopopup.js; sourceTree = "<group>"; };
 		B9CD154A308240920038733C /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = background.js; path = ../../../background.js; sourceTree = "<group>"; };
-		B9CD154E308240920038733C /* rules.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = rules.json; path = ../../../rules.json; sourceTree = "<group>"; };
 		B9CD154F308240920038733C /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../../manifest.json; sourceTree = "<group>"; };
 		B9CD1550308240920038733C /* sites.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = sites.js; path = ../../../sites.js; sourceTree = "<group>"; };
+		C0DEA100308240920038733C /* content-bridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = content-bridge.js; path = ../../../content-bridge.js; sourceTree = "<group>"; };
+		C0DEA101308240920038733C /* default-ad-domains.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = default-ad-domains.js; path = ../../../default-ad-domains.js; sourceTree = "<group>"; };
+		C0DEA102308240920038733C /* force-flag.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = force-flag.js; path = ../../../force-flag.js; sourceTree = "<group>"; };
+		C0DEA103308240920038733C /* youtube.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = youtube.js; path = ../../../youtube.js; sourceTree = "<group>"; };
+		C0DEA104308240920038733C /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = popup.html; path = ../../../popup.html; sourceTree = "<group>"; };
+		C0DEA105308240920038733C /* popup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = popup.js; path = ../../../popup.js; sourceTree = "<group>"; };
+		C0DEA106308240920038733C /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../../icons; sourceTree = "<group>"; };
+		C0DEA107308240920038733C /* rulesets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rulesets; path = ../../../rulesets; sourceTree = "<group>"; };
+		C0DEA108308240920038733C /* filters */ = {isa = PBXFileReference; lastKnownFileType = folder; name = filters; path = ../../../filters; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,9 +154,17 @@
 			children = (
 				B9CD1549308240920038733C /* nopopup.js */,
 				B9CD154A308240920038733C /* background.js */,
-				B9CD154E308240920038733C /* rules.json */,
 				B9CD154F308240920038733C /* manifest.json */,
 				B9CD1550308240920038733C /* sites.js */,
+				C0DEA100308240920038733C /* content-bridge.js */,
+				C0DEA101308240920038733C /* default-ad-domains.js */,
+				C0DEA102308240920038733C /* force-flag.js */,
+				C0DEA103308240920038733C /* youtube.js */,
+				C0DEA104308240920038733C /* popup.html */,
+				C0DEA105308240920038733C /* popup.js */,
+				C0DEA106308240920038733C /* icons */,
+				C0DEA107308240920038733C /* rulesets */,
+				C0DEA108308240920038733C /* filters */,
 			);
 			name = Resources;
 			path = "Popup Ad Blocker Extension";
@@ -238,8 +262,16 @@
 			files = (
 				B9CD1557308240920038733C /* manifest.json in Resources */,
 				B9CD1558308240920038733C /* sites.js in Resources */,
+				C0DEB100308240920038733C /* content-bridge.js in Resources */,
+				C0DEB101308240920038733C /* default-ad-domains.js in Resources */,
+				C0DEB102308240920038733C /* force-flag.js in Resources */,
+				C0DEB103308240920038733C /* youtube.js in Resources */,
+				C0DEB104308240920038733C /* popup.html in Resources */,
+				C0DEB105308240920038733C /* popup.js in Resources */,
+				C0DEB106308240920038733C /* icons in Resources */,
+				C0DEB107308240920038733C /* rulesets in Resources */,
+				C0DEB108308240920038733C /* filters in Resources */,
 				B9CD1552308240920038733C /* background.js in Resources */,
-				B9CD1556308240920038733C /* rules.json in Resources */,
 				B9CD1551308240920038733C /* nopopup.js in Resources */,
 			);
 		};

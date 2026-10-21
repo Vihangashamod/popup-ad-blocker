@@ -151,7 +151,8 @@ toggleCurrentSiteBtn.addEventListener('click', async () => {
 
   let next;
   if (isProtected) {
-    next = cachedExtraSites.filter(s => s !== currentActiveDomain);
+    // Audit fix: on a subdomain (www2.site.com) the stored entry is the parent (site.com)
+    next = cachedExtraSites.filter(s => !(currentActiveDomain === s || currentActiveDomain.endsWith('.' + s)));
   } else {
     next = Array.from(new Set([...cachedExtraSites, currentActiveDomain])).sort();
   }
@@ -262,7 +263,6 @@ const loadStats = () => {
     statLinks.textContent = (stats.linksDefused || 0).toLocaleString();
 
     const count = res.adDomainsCount || 3677;
-    statFilters.textContent = count.toLocaleString() + '+';
     if (fullAdCount) fullAdCount.textContent = count.toLocaleString() + ' domains';
 
     const lastUpdatedFormatted = formatTimeAgo(res.lastUpdated);
@@ -515,4 +515,85 @@ loadStats();
       activeChip = r.watchChip;
       render();
     });
+})();
+
+// ---------------------------------------------------------------------------------------------
+// Ad blocking on/off per site, blocked-request count, filter list switches
+// ---------------------------------------------------------------------------------------------
+(() => {
+  const pauseToggle = $('pauseToggle');
+  const pauseDomain = $('pauseDomain');
+  const pageBlocked = $('pageBlocked');
+  const reloadHint = $('reloadHint');
+  let tab = null;
+  let host = null;
+
+  const matches = (h, list) => list.some((s) => h === s || h.endsWith('.' + s));
+  const fmt = (n) => (n || 0).toLocaleString();
+
+  chrome.tabs.query({ active: true, currentWindow: true }).then(async ([t]) => {
+    tab = t;
+    try {
+      const u = new URL(t.url);
+      if (/^https?:$/.test(u.protocol)) host = u.hostname.replace(/^www\./, '');
+    } catch {}
+    if (!host) {
+      pauseDomain.textContent = 'Not available on this page';
+      pauseToggle.disabled = true;
+      return;
+    }
+    pauseDomain.textContent = host;
+    const { pausedSites = [] } = await chrome.storage.local.get({ pausedSites: [] });
+    pauseToggle.checked = !matches(host, pausedSites);
+
+    // Requests blocked in this tab. Chrome counts them; the popup may read them because the
+    // user opened it on this tab (activeTab).
+    try {
+      const { rulesMatchedInfo } = await chrome.declarativeNetRequest.getMatchedRules({ tabId: t.id });
+      const n = rulesMatchedInfo.length;
+      pageBlocked.innerHTML = `<b>${fmt(n)}</b> request${n === 1 ? '' : 's'} blocked on this page`;
+    } catch {
+      pageBlocked.textContent = '';
+    }
+  });
+
+  pauseToggle.addEventListener('change', async () => {
+    if (!host) return;
+    const { pausedSites = [] } = await chrome.storage.local.get({ pausedSites: [] });
+    const next = pauseToggle.checked
+      ? pausedSites.filter((s) => !(host === s || host.endsWith('.' + s)))
+      : [...new Set([...pausedSites, host])].sort();
+    await chrome.storage.local.set({ pausedSites: next });
+    reloadHint.classList.add('show');
+  });
+
+  $('reloadBtn').addEventListener('click', () => {
+    if (tab?.id) chrome.tabs.reload(tab.id);
+    window.close();
+  });
+
+  // Filter lists
+  const toggles = document.querySelectorAll('input[data-ruleset]');
+  chrome.runtime.sendMessage({ action: 'getState' }, (state) => {
+    if (!state) return;
+    const enabled = new Set(state.enabledRulesets || []);
+    toggles.forEach((t) => { t.checked = enabled.has(t.dataset.ruleset); });
+    const m = state.meta || {};
+    const rs = m.rulesets || {};
+    if (rs.easylist) $('descEasylist').textContent = `Ads on every site · ${fmt(rs.easylist.filters)} filters`;
+    if (rs.easyprivacy) $('descEasyprivacy').textContent = `Trackers and analytics · ${fmt(rs.easyprivacy.filters)} filters`;
+    if (rs.custom) $('descCustom').textContent = `YouTube ads, pop-up servers · ${fmt(rs.custom.filters)} rules`;
+    if (m.cosmetic) $('cosmeticCount').textContent = `${fmt(m.cosmetic.generic)} rules + ${fmt(m.cosmetic.sites)} sites`;
+    if (m.builtAt) $('listsBuilt').textContent = 'Lists built ' + new Date(m.builtAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+
+    const total = Object.entries(rs).filter(([id]) => enabled.has(id)).reduce((a, [, v]) => a + (v.filters || 0), 0)
+      + (state.adDomainsCount || 0);
+    $('statFilters').textContent = total >= 1000 ? Math.round(total / 1000) + 'k' : fmt(total);
+  });
+
+  toggles.forEach((t) => t.addEventListener('change', () => {
+    chrome.runtime.sendMessage({ action: 'setRuleset', id: t.dataset.ruleset, enabled: t.checked }, (res) => {
+      if (!res?.success) t.checked = !t.checked;
+    });
+  }));
 })();

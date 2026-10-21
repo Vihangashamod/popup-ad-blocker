@@ -1,0 +1,37 @@
+! Our own filters, in Adblock Plus / EasyList syntax. Compiled into rulesets/custom.json and
+! filters/cosmetic.json by build-filters.mjs. Add a line, run "npm run build", reload.
+
+! ---- YouTube: network -------------------------------------------------------------------
+||youtube.com/api/stats/ads^
+||youtube.com/pagead/
+||youtube.com/get_midroll_
+||youtube.com/ptracking^
+||googleads.g.doubleclick.net^
+||static.doubleclick.net/instream/
+||imasdk.googleapis.com^$third-party
+
+! ---- YouTube: page ads (desktop, music, mobile) -------------------------------------------
+youtube.com,youtube-nocookie.com##ytd-ad-slot-renderer
+youtube.com##ytd-rich-item-renderer:has(> #content > ytd-ad-slot-renderer)
+youtube.com##ytd-rich-section-renderer:has(ytd-statement-banner-renderer)
+youtube.com##ytd-in-feed-ad-layout-renderer
+youtube.com##ytd-banner-promo-renderer
+youtube.com##ytd-statement-banner-renderer
+youtube.com##ytd-promoted-sparkles-web-renderer
+youtube.com##ytd-promoted-video-renderer
+youtube.com##ytd-display-ad-renderer
+youtube.com##ytd-companion-slot-renderer
+youtube.com##ytd-action-companion-ad-renderer
+youtube.com##ytd-player-legacy-desktop-watch-ads-renderer
+youtube.com##ytd-search-pyv-renderer
+youtube.com##ytd-merch-shelf-renderer
+youtube.com###masthead-ad
+youtube.com###player-ads
+youtube.com###panels > ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"]
+youtube.com,youtube-nocookie.com##.ytp-ad-overlay-container
+youtube.com,youtube-nocookie.com##.ytp-ad-overlay-slot
+youtube.com,youtube-nocookie.com##.ytp-featured-product
+youtube.com##ytd-reel-video-renderer:has(ytd-ad-slot-renderer)
+youtube.com##ytm-promoted-sparkles-web-renderer
+youtube.com##ad-slot-renderer
+youtube.com##ytm-companion-ad-renderer
