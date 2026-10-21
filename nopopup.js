@@ -8,6 +8,7 @@
 (() => {
   const sites = Array.isArray(self.BLOCK_SITES) ? [...self.BLOCK_SITES] : [];
   delete self.BLOCK_SITES;
+  delete self.SITE_GROUPS; // don't leave the site list visible to the page
 
   const a = location.ancestorOrigins;
   let topSite;
