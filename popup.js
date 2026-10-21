@@ -66,26 +66,17 @@ let cachedExtraSites = [];
 const getExtra = () => chrome.storage.local.get({ extraSites: [] }).then(r => r.extraSites || []);
 const setExtra = (sites) => chrome.storage.local.set({ extraSites: sites });
 
-// Tab Switching (the last tab used is remembered)
-const showTab = (tabId) => {
-  const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
-  const panel = $(tabId);
-  if (!btn || !panel) return;
-  document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
-  btn.classList.add('active');
-  panel.classList.add('active');
-  if (tabId === 'tabWatch') setTimeout(() => $('watchSearch')?.focus(), 0);
-};
-
+// Tab Switching
 document.querySelectorAll('.tab-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
-    showTab(btn.dataset.tab);
-    chrome.storage.local.set({ lastTab: btn.dataset.tab });
+    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+
+    btn.classList.add('active');
+    const panel = $(btn.dataset.tab);
+    if (panel) panel.classList.add('active');
   });
 });
-
-chrome.storage.local.get({ lastTab: 'tabDashboard' }).then((r) => showTab(r.lastTab));
 
 // Check if domain is protected
 const isDomainProtected = (domain) => {
@@ -151,8 +142,7 @@ toggleCurrentSiteBtn.addEventListener('click', async () => {
 
   let next;
   if (isProtected) {
-    // Audit fix: on a subdomain (www2.site.com) the stored entry is the parent (site.com)
-    next = cachedExtraSites.filter(s => !(currentActiveDomain === s || currentActiveDomain.endsWith('.' + s)));
+    next = cachedExtraSites.filter(s => s !== currentActiveDomain);
   } else {
     next = Array.from(new Set([...cachedExtraSites, currentActiveDomain])).sort();
   }
@@ -263,6 +253,7 @@ const loadStats = () => {
     statLinks.textContent = (stats.linksDefused || 0).toLocaleString();
 
     const count = res.adDomainsCount || 3677;
+    statFilters.textContent = count.toLocaleString() + '+';
     if (fullAdCount) fullAdCount.textContent = count.toLocaleString() + ' domains';
 
     const lastUpdatedFormatted = formatTimeAgo(res.lastUpdated);
@@ -320,280 +311,3 @@ getExtra().then((extra) => {
   refreshActiveSiteWidget();
 });
 loadStats();
-
-// ---------------------------------------------------------------------------
-// Watch tab: quick launcher for protected sites
-// ---------------------------------------------------------------------------
-(() => {
-  const GROUPS = self.SITE_GROUPS || {};
-  const HIDDEN_GROUPS = new Set(['Video Players']); // embed hosts, not opened directly
-  const MAX_RECENT = 6;
-
-  const searchEl = $('watchSearch');
-  const chipsEl = $('watchChips');
-  const listEl = $('watchList');
-  const emptyEl = $('watchEmpty');
-  const recentWrap = $('recentWrap');
-  const recentRow = $('recentRow');
-  const openHereEl = $('openHere');
-
-  let favs = [];
-  let recent = [];
-  let extras = [];
-  let activeChip = 'All';
-  let kbIndex = -1;
-
-  // Stable colour per site for the letter avatar
-  const hue = (str) => [...str].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
-  const label = (domain) => domain.split('.')[0];
-
-  const catalog = () => {
-    const items = [];
-    const seen = new Set();
-    for (const [group, sites] of Object.entries(GROUPS)) {
-      if (HIDDEN_GROUPS.has(group)) continue;
-      for (const d of sites) {
-        if (seen.has(d)) continue;
-        seen.add(d);
-        items.push({ domain: d, group });
-      }
-    }
-    for (const d of extras) {
-      if (!seen.has(d)) { seen.add(d); items.push({ domain: d, group: 'My Sites' }); }
-    }
-    return items;
-  };
-
-  const openSite = async (domain) => {
-    const url = 'https://' + domain + '/';
-    recent = [domain, ...recent.filter((d) => d !== domain)].slice(0, MAX_RECENT);
-    await chrome.storage.local.set({ recentSites: recent });
-    if (openHereEl.checked) {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (tab?.id) await chrome.tabs.update(tab.id, { url });
-      else await chrome.tabs.create({ url });
-    } else {
-      await chrome.tabs.create({ url });
-    }
-    window.close();
-  };
-
-  const toggleFav = async (domain) => {
-    favs = favs.includes(domain) ? favs.filter((d) => d !== domain) : [...favs, domain];
-    await chrome.storage.local.set({ favSites: favs });
-    render();
-  };
-
-  const filtered = () => {
-    const q = searchEl.value.trim().toLowerCase();
-    let items = catalog();
-    if (activeChip === '★ Favourites') items = items.filter((i) => favs.includes(i.domain));
-    else if (activeChip !== 'All') items = items.filter((i) => i.group === activeChip);
-    if (q) items = items.filter((i) => i.domain.includes(q) || i.group.toLowerCase().includes(q));
-    // Favourites first, then alphabetical
-    return items.sort((a, b) =>
-      (favs.includes(b.domain) - favs.includes(a.domain)) || a.domain.localeCompare(b.domain));
-  };
-
-  const renderChips = () => {
-    const all = catalog();
-    const groups = ['All', '★ Favourites', ...new Set(all.map((i) => i.group))];
-    chipsEl.innerHTML = '';
-    for (const g of groups) {
-      const n = g === 'All' ? all.length
-        : g === '★ Favourites' ? all.filter((i) => favs.includes(i.domain)).length
-        : all.filter((i) => i.group === g).length;
-      if (g === '★ Favourites' && !n && activeChip !== g) continue;
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'chip' + (g === activeChip ? ' active' : '');
-      b.textContent = g;
-      const c = document.createElement('span');
-      c.className = 'n';
-      c.textContent = n;
-      b.append(c);
-      b.addEventListener('click', () => {
-        activeChip = g;
-        chrome.storage.local.set({ watchChip: g });
-        render();
-      });
-      chipsEl.append(b);
-    }
-  };
-
-  const renderRecent = () => {
-    const valid = recent.filter((d) => catalog().some((i) => i.domain === d));
-    recentWrap.style.display = valid.length ? 'block' : 'none';
-    recentRow.innerHTML = '';
-    for (const d of valid) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'recent-pill';
-      b.textContent = d;
-      b.title = 'Open ' + d;
-      b.addEventListener('click', () => openSite(d));
-      recentRow.append(b);
-    }
-  };
-
-  const renderList = () => {
-    const items = filtered();
-    listEl.innerHTML = '';
-    emptyEl.style.display = items.length ? 'none' : 'block';
-    if (kbIndex >= items.length) kbIndex = items.length - 1;
-
-    items.forEach((it, idx) => {
-      const li = document.createElement('li');
-      li.className = 'watch-item' + (idx === kbIndex ? ' kb' : '');
-      li.tabIndex = 0;
-      li.title = 'Open https://' + it.domain;
-
-      const av = document.createElement('div');
-      av.className = 'avatar';
-      av.style.background = `hsl(${hue(it.domain)} 55% 42%)`;
-      av.textContent = label(it.domain).replace(/[^a-z0-9]/gi, '').slice(0, 2);
-
-      const meta = document.createElement('div');
-      meta.className = 'watch-meta';
-      const nm = document.createElement('div');
-      nm.className = 'watch-name';
-      nm.textContent = it.domain;
-      const cat = document.createElement('div');
-      cat.className = 'watch-cat';
-      cat.textContent = it.group;
-      meta.append(nm, cat);
-
-      const fav = document.createElement('button');
-      fav.type = 'button';
-      const isFav = favs.includes(it.domain);
-      fav.className = 'icon-btn' + (isFav ? ' fav-on' : '');
-      fav.textContent = isFav ? '★' : '☆';
-      fav.title = isFav ? 'Remove from favourites' : 'Add to favourites';
-      fav.addEventListener('click', (e) => { e.stopPropagation(); toggleFav(it.domain); });
-
-      const go = document.createElement('button');
-      go.type = 'button';
-      go.className = 'icon-btn';
-      go.textContent = '↗';
-      go.title = 'Open';
-      go.addEventListener('click', (e) => { e.stopPropagation(); openSite(it.domain); });
-
-      li.append(av, meta, fav, go);
-      li.addEventListener('click', () => openSite(it.domain));
-      li.addEventListener('keydown', (e) => { if (e.key === 'Enter') openSite(it.domain); });
-      listEl.append(li);
-    });
-  };
-
-  const render = () => { renderChips(); renderRecent(); renderList(); };
-
-  // Keyboard: arrows move, Enter opens the highlighted (or top) result
-  searchEl.addEventListener('input', () => { kbIndex = -1; renderList(); });
-  searchEl.addEventListener('keydown', (e) => {
-    const items = filtered();
-    if (e.key === 'ArrowDown') { e.preventDefault(); kbIndex = Math.min(kbIndex + 1, items.length - 1); renderList(); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); kbIndex = Math.max(kbIndex - 1, 0); renderList(); }
-    else if (e.key === 'Enter' && items.length) { e.preventDefault(); openSite(items[Math.max(kbIndex, 0)].domain); }
-  });
-  listEl.addEventListener('mousemove', () => {
-    if (kbIndex !== -1) { kbIndex = -1; listEl.querySelector('.kb')?.classList.remove('kb'); }
-  });
-
-  openHereEl.addEventListener('change', () => chrome.storage.local.set({ openInCurrentTab: openHereEl.checked }));
-
-  // Keep "My Sites" in step with sites added/removed in the Sites tab
-  chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && changes.extraSites) { extras = changes.extraSites.newValue || []; render(); }
-  });
-
-  chrome.storage.local.get({ favSites: [], recentSites: [], extraSites: [], openInCurrentTab: false, watchChip: 'All' })
-    .then((r) => {
-      favs = r.favSites;
-      recent = r.recentSites;
-      extras = r.extraSites;
-      openHereEl.checked = r.openInCurrentTab;
-      activeChip = r.watchChip;
-      render();
-    });
-})();
-
-// ---------------------------------------------------------------------------------------------
-// Ad blocking on/off per site, blocked-request count, filter list switches
-// ---------------------------------------------------------------------------------------------
-(() => {
-  const pauseToggle = $('pauseToggle');
-  const pauseDomain = $('pauseDomain');
-  const pageBlocked = $('pageBlocked');
-  const reloadHint = $('reloadHint');
-  let tab = null;
-  let host = null;
-
-  const matches = (h, list) => list.some((s) => h === s || h.endsWith('.' + s));
-  const fmt = (n) => (n || 0).toLocaleString();
-
-  chrome.tabs.query({ active: true, currentWindow: true }).then(async ([t]) => {
-    tab = t;
-    try {
-      const u = new URL(t.url);
-      if (/^https?:$/.test(u.protocol)) host = u.hostname.replace(/^www\./, '');
-    } catch {}
-    if (!host) {
-      pauseDomain.textContent = 'Not available on this page';
-      pauseToggle.disabled = true;
-      return;
-    }
-    pauseDomain.textContent = host;
-    const { pausedSites = [] } = await chrome.storage.local.get({ pausedSites: [] });
-    pauseToggle.checked = !matches(host, pausedSites);
-
-    // Requests blocked in this tab. Chrome counts them; the popup may read them because the
-    // user opened it on this tab (activeTab).
-    try {
-      const { rulesMatchedInfo } = await chrome.declarativeNetRequest.getMatchedRules({ tabId: t.id });
-      const n = rulesMatchedInfo.length;
-      pageBlocked.innerHTML = `<b>${fmt(n)}</b> request${n === 1 ? '' : 's'} blocked on this page`;
-    } catch {
-      pageBlocked.textContent = '';
-    }
-  });
-
-  pauseToggle.addEventListener('change', async () => {
-    if (!host) return;
-    const { pausedSites = [] } = await chrome.storage.local.get({ pausedSites: [] });
-    const next = pauseToggle.checked
-      ? pausedSites.filter((s) => !(host === s || host.endsWith('.' + s)))
-      : [...new Set([...pausedSites, host])].sort();
-    await chrome.storage.local.set({ pausedSites: next });
-    reloadHint.classList.add('show');
-  });
-
-  $('reloadBtn').addEventListener('click', () => {
-    if (tab?.id) chrome.tabs.reload(tab.id);
-    window.close();
-  });
-
-  // Filter lists
-  const toggles = document.querySelectorAll('input[data-ruleset]');
-  chrome.runtime.sendMessage({ action: 'getState' }, (state) => {
-    if (!state) return;
-    const enabled = new Set(state.enabledRulesets || []);
-    toggles.forEach((t) => { t.checked = enabled.has(t.dataset.ruleset); });
-    const m = state.meta || {};
-    const rs = m.rulesets || {};
-    if (rs.easylist) $('descEasylist').textContent = `Ads on every site · ${fmt(rs.easylist.filters)} filters`;
-    if (rs.easyprivacy) $('descEasyprivacy').textContent = `Trackers and analytics · ${fmt(rs.easyprivacy.filters)} filters`;
-    if (rs.custom) $('descCustom').textContent = `YouTube ads, pop-up servers · ${fmt(rs.custom.filters)} rules`;
-    if (m.cosmetic) $('cosmeticCount').textContent = `${fmt(m.cosmetic.generic)} rules + ${fmt(m.cosmetic.sites)} sites`;
-    if (m.builtAt) $('listsBuilt').textContent = 'Lists built ' + new Date(m.builtAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-
-    const total = Object.entries(rs).filter(([id]) => enabled.has(id)).reduce((a, [, v]) => a + (v.filters || 0), 0)
-      + (state.adDomainsCount || 0);
-    $('statFilters').textContent = total >= 1000 ? Math.round(total / 1000) + 'k' : fmt(total);
-  });
-
-  toggles.forEach((t) => t.addEventListener('change', () => {
-    chrome.runtime.sendMessage({ action: 'setRuleset', id: t.dataset.ruleset, enabled: t.checked }, (res) => {
-      if (!res?.success) t.checked = !t.checked;
-    });
-  }));
-})();
