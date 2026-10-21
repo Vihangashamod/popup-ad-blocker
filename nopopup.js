@@ -8,6 +8,8 @@
 (() => {
   const sites = Array.isArray(self.BLOCK_SITES) ? [...self.BLOCK_SITES] : [];
   delete self.BLOCK_SITES;
+  const removedHere = self.__PAB_OFF__ === true; // this frame's site was removed in the popup
+  delete self.__PAB_OFF__;
 
   const a = location.ancestorOrigins;
   let topSite;
@@ -194,8 +196,11 @@
     }
   };
 
-  // Immediate check against built-in sites
-  if (isMatched(topSite, sites) || isMatched(location.hostname, sites)) {
+  // Immediate check against built-in sites (skipping ones the user removed)
+  const sameSiteAsTop = isMatched(location.hostname, [topSite.replace(/^www\./, '')]);
+  const topProtected = isMatched(topSite, sites) && !(removedHere && (window === window.top || sameSiteAsTop));
+  const selfProtected = isMatched(location.hostname, sites) && !removedHere;
+  if (topProtected || selfProtected) {
     init();
   }
 

@@ -351,6 +351,20 @@
   }
   .btn-remove:hover { color: var(--danger); }
   .site-actions { display: inline-flex; align-items: center; gap: 2px; flex: none; }
+  .confirm-label { font-size: 11px; color: var(--warning); margin-right: 4px; white-space: nowrap; }
+  .btn-confirm {
+    border: none; border-radius: 4px; padding: 1px 7px; margin-left: 3px;
+    font-family: inherit; font-size: 11px; font-weight: 600; cursor: pointer;
+  }
+  .btn-confirm.yes { background: var(--danger); color: #fff; }
+  .btn-confirm.no { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
+  .btn.confirming { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.4); }
+  .btn-restore {
+    display: none; width: 100%; justify-content: center; margin-top: 8px; padding: 6px;
+    background: transparent; border: 1px dashed var(--card-border); border-radius: 7px;
+    color: var(--text-muted); font-family: inherit; font-size: 11.5px; cursor: pointer;
+  }
+  .btn-restore:hover { color: var(--text-main); border-color: var(--primary); }
   .btn-open {
     background: transparent;
     border: none;
@@ -535,6 +549,7 @@
       <span class="badge-count" id="builtinCount">0</span>
     </div>
     <ul class="site-list" id="builtin" style="max-height: 110px;"></ul>
+    <button type="button" class="btn-restore" id="restoreBtn"></button>
 
     <button type="button" class="btn btn-block" id="copyBtn" style="margin-top: 10px; background: rgba(255,255,255,0.06); color: #fff;">
       Copy full list for sites.js

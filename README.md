@@ -58,6 +58,14 @@ There are two easy ways to add protected sites:
 3. The popup automatically detects the site. Click **"+ Protect This Site"**.
 4. Full pop-up, pop-under, and ad-link protections activate immediately.
 
+### Opening and removing sites
+- Every site in the **Protected Sites** tab has a **↗** button that opens it in a new tab.
+- The **✕** button removes any site, built-in ones included. It asks **"Remove …? Yes / No"**
+  first and cancels itself after 5 seconds. On the Dashboard, **Disable Protection** needs a
+  second click to confirm.
+- Removed built-in sites are remembered in the browser, not deleted from `sites.js`.
+  **Restore removed built-in sites** brings them all back; adding one again in the form restores it.
+
 ### Option B: Built-in Defaults (`sites.js`)
 - Pre-populated with 90+ popular streaming, anime, sports, and video hosting domains (`nunflix.kim`, `cineby.rocks`, `vidsrc.to`, `soap2day`, `aniwatch`, `streameast`, `lookmovie`, etc.).
 - You can add domains to `sites.js` and click **"Copy full list for sites.js"** in the popup to export your combined list.

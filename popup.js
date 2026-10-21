@@ -61,10 +61,39 @@ const copyBtn = $('copyBtn');
 
 let currentActiveDomain = null;
 let cachedExtraSites = [];
+let cachedRemoved = []; // built-in sites the user removed
+
+// Built-in sites minus the ones the user removed
+const activeBuiltin = () => builtin.filter(s => !cachedRemoved.includes(s));
+const matchesSite = (domain, s) => domain === s || domain.endsWith('.' + s);
 
 // Storage Accessors
 const getExtra = () => chrome.storage.local.get({ extraSites: [] }).then(r => r.extraSites || []);
 const setExtra = (sites) => chrome.storage.local.set({ extraSites: sites });
+const getRemoved = () => chrome.storage.local.get({ removedSites: [] }).then(r => r.removedSites || []);
+const setRemoved = (sites) => chrome.storage.local.set({ removedSites: sites });
+
+// Ask before deleting: swaps the given buttons for "Remove? Yes / No" for a few seconds.
+const confirmInline = (actions, question, onYes) => {
+  const original = [...actions.childNodes];
+  const label = document.createElement('span');
+  label.className = 'confirm-label';
+  label.textContent = question;
+  const yes = document.createElement('button');
+  yes.type = 'button';
+  yes.className = 'btn-confirm yes';
+  yes.textContent = 'Yes';
+  const no = document.createElement('button');
+  no.type = 'button';
+  no.className = 'btn-confirm no';
+  no.textContent = 'No';
+  const restore = () => { clearTimeout(timer); actions.replaceChildren(...original); };
+  const timer = setTimeout(restore, 5000);
+  yes.addEventListener('click', () => { clearTimeout(timer); onYes(); });
+  no.addEventListener('click', restore);
+  actions.replaceChildren(label, yes, no);
+  yes.focus();
+};
 
 // Tab Switching
 document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -82,8 +111,8 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
 const isDomainProtected = (domain) => {
   if (!domain) return false;
   const clean = domain.toLowerCase().replace(/^www\./, '');
-  const all = [...builtin, ...cachedExtraSites];
-  return all.some(s => clean === s || clean.endsWith('.' + s));
+  const all = [...activeBuiltin(), ...cachedExtraSites];
+  return all.some(s => matchesSite(clean, s));
 };
 
 // Render Current Active Site
@@ -99,15 +128,14 @@ const refreshActiveSiteWidget = () => {
   currentDomainEl.textContent = currentActiveDomain;
 
   const isProtected = isDomainProtected(currentActiveDomain);
-  const isBuiltin = builtin.some(s => currentActiveDomain === s || currentActiveDomain.endsWith('.' + s));
 
   if (isProtected) {
     siteStatusBadge.className = 'status-badge on';
     siteStatusBadge.textContent = '🛡️ Protected';
     toggleCurrentSiteBtn.style.display = 'inline-flex';
     toggleCurrentSiteBtn.className = 'btn btn-toggle-on';
-    toggleCurrentSiteBtn.textContent = isBuiltin ? 'Built-in (Always On)' : 'Disable Protection';
-    toggleCurrentSiteBtn.disabled = isBuiltin;
+    toggleCurrentSiteBtn.textContent = 'Disable Protection';
+    toggleCurrentSiteBtn.disabled = false;
   } else {
     siteStatusBadge.className = 'status-badge off';
     siteStatusBadge.textContent = '⚪ Not Protected';
@@ -136,21 +164,42 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 });
 
 // Toggle Protection for Active Site
+let disableArmed = null; // first click arms, second click (within 4s) confirms
+
 toggleCurrentSiteBtn.addEventListener('click', async () => {
   if (!currentActiveDomain) return;
-  const isProtected = isDomainProtected(currentActiveDomain);
+  const d = currentActiveDomain;
 
-  let next;
-  if (isProtected) {
-    next = cachedExtraSites.filter(s => s !== currentActiveDomain);
-  } else {
-    next = Array.from(new Set([...cachedExtraSites, currentActiveDomain])).sort();
+  if (!isDomainProtected(d)) {
+    // Turning protection on: re-enable a removed built-in entry, or add the site
+    const removedMatch = cachedRemoved.filter(s => matchesSite(d, s));
+    if (removedMatch.length) {
+      cachedRemoved = cachedRemoved.filter(s => !removedMatch.includes(s));
+      await setRemoved(cachedRemoved);
+    } else {
+      cachedExtraSites = Array.from(new Set([...cachedExtraSites, d])).sort();
+      await setExtra(cachedExtraSites);
+    }
+    renderAll();
+    return;
   }
 
-  await setExtra(next);
-  cachedExtraSites = next;
-  renderExtra(next);
-  refreshActiveSiteWidget();
+  // Turning protection off needs a second click to confirm
+  if (!disableArmed) {
+    toggleCurrentSiteBtn.textContent = 'Click again to confirm';
+    toggleCurrentSiteBtn.classList.add('confirming');
+    disableArmed = setTimeout(() => { disableArmed = null; refreshActiveSiteWidget(); }, 4000);
+    return;
+  }
+  clearTimeout(disableArmed);
+  disableArmed = null;
+  toggleCurrentSiteBtn.classList.remove('confirming');
+
+  // Remove every entry that covers this site (user-added and built-in, including parent domains)
+  cachedExtraSites = cachedExtraSites.filter(s => !matchesSite(d, s));
+  cachedRemoved = Array.from(new Set([...cachedRemoved, ...builtin.filter(s => matchesSite(d, s))])).sort();
+  await chrome.storage.local.set({ extraSites: cachedExtraSites, removedSites: cachedRemoved });
+  renderAll();
 });
 
 // Button that opens a site in a new tab
@@ -168,19 +217,41 @@ const makeOpenBtn = (site) => {
 };
 
 // Render Sites Lists
+const makeRemoveBtn = (site, onConfirmed) => {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn-remove';
+  btn.textContent = '✕';
+  btn.title = `Remove ${site}`;
+  btn.addEventListener('click', () => confirmInline(btn.parentElement, `Remove ${site}?`, onConfirmed));
+  return btn;
+};
+
 const renderBuiltin = (filter = '') => {
   builtinList.innerHTML = '';
-  const filtered = builtin.filter(s => s.toLowerCase().includes(filter.toLowerCase()));
-  builtinCount.textContent = builtin.length;
+  const list = activeBuiltin();
+  const filtered = list.filter(s => s.toLowerCase().includes(filter.toLowerCase()));
+  builtinCount.textContent = list.length;
 
   for (const site of filtered) {
     const li = document.createElement('li');
     const span = document.createElement('span');
     span.className = 'site-name';
     span.textContent = site;
-    li.append(span, makeOpenBtn(site));
+    const actions = document.createElement('span');
+    actions.className = 'site-actions';
+    actions.append(makeOpenBtn(site), makeRemoveBtn(site, async () => {
+      cachedRemoved = Array.from(new Set([...cachedRemoved, site])).sort();
+      await setRemoved(cachedRemoved);
+      renderAll();
+    }));
+    li.append(span, actions);
     builtinList.appendChild(li);
   }
+
+  // "Restore removed" button
+  restoreBtn.style.display = cachedRemoved.length ? 'flex' : 'none';
+  restoreBtn.textContent = `Restore ${cachedRemoved.length} removed built-in site${cachedRemoved.length === 1 ? '' : 's'}`;
 };
 
 const renderExtra = (extra, filter = '') => {
@@ -197,15 +268,10 @@ const renderExtra = (extra, filter = '') => {
     span.className = 'site-name';
     span.textContent = site;
 
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'btn-remove';
-    removeBtn.textContent = '✕';
-    removeBtn.title = `Remove ${site}`;
-    removeBtn.addEventListener('click', async () => {
-      const next = (await getExtra()).filter(s => s !== site);
-      await setExtra(next);
-      renderExtra(next, siteSearchInput.value);
-      refreshActiveSiteWidget();
+    const removeBtn = makeRemoveBtn(site, async () => {
+      cachedExtraSites = (await getExtra()).filter(s => s !== site);
+      await setExtra(cachedExtraSites);
+      renderAll();
     });
 
     const actions = document.createElement('span');
@@ -235,6 +301,14 @@ addForm.addEventListener('submit', async (e) => {
   }
 
   const extra = await getExtra();
+  if (cachedRemoved.includes(domain)) {
+    // Adding a removed built-in site brings it back
+    cachedRemoved = cachedRemoved.filter(s => s !== domain);
+    await setRemoved(cachedRemoved);
+    addInput.value = '';
+    renderAll();
+    return;
+  }
   if (builtin.includes(domain) || extra.includes(domain)) {
     addError.textContent = `${domain} is already in the list`;
     return;
@@ -249,7 +323,7 @@ addForm.addEventListener('submit', async (e) => {
 
 // Copy full list for sites.js
 copyBtn.addEventListener('click', async () => {
-  const all = Array.from(new Set([...builtin, ...cachedExtraSites])).sort();
+  const all = Array.from(new Set([...activeBuiltin(), ...cachedExtraSites])).sort();
   const text = `self.BLOCK_SITES = ${JSON.stringify(all, null, 2)};\n`;
   try {
     await navigator.clipboard.writeText(text);
@@ -320,11 +394,25 @@ fullUpdateBtn.addEventListener('click', () => {
   triggerUpdate(fullUpdateBtn, fullUpdateIcon, fullFeedback);
 });
 
-// Initial Setup
-renderBuiltin();
-getExtra().then((extra) => {
-  cachedExtraSites = extra;
-  renderExtra(extra);
+// Restore all removed built-in sites (not destructive, so no confirmation)
+const restoreBtn = $('restoreBtn');
+restoreBtn.addEventListener('click', async () => {
+  cachedRemoved = [];
+  await setRemoved([]);
+  renderAll();
+});
+
+const renderAll = () => {
+  const q = siteSearchInput.value.trim();
+  renderBuiltin(q);
+  renderExtra(cachedExtraSites, q);
   refreshActiveSiteWidget();
+};
+
+// Initial Setup
+Promise.all([getExtra(), getRemoved()]).then(([extra, removed]) => {
+  cachedExtraSites = extra;
+  cachedRemoved = removed;
+  renderAll();
 });
 loadStats();

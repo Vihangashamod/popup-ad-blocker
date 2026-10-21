@@ -33,11 +33,42 @@ const makePatternRule = (c, i, scope) => ({
   condition: { ...c, ...scope, domainType: 'thirdParty', isUrlFilterCaseSensitive: true },
 });
 
-// Combines built-in sites with user-added extra sites
-const allSites = () => chrome.storage.local.get({ extraSites: [] }).then(r => {
-  const builtin = Array.isArray(self.BLOCK_SITES) ? self.BLOCK_SITES : [];
+// Built-in sites (minus any the user removed) + user-added sites
+const allSites = () => chrome.storage.local.get({ extraSites: [], removedSites: [] }).then(r => {
+  const builtin = (Array.isArray(self.BLOCK_SITES) ? self.BLOCK_SITES : []).filter(s => !r.removedSites.includes(s));
   return Array.from(new Set(builtin.concat(r.extraSites || [])));
 });
+
+// Page scripts are registered here instead of in manifest.json so their order is controlled:
+// off-flag.js (removed sites only) must run right before nopopup.js. Chrome runs registered
+// scripts in alphabetical order of their ids, hence the 1-/2- prefixes.
+let scriptQueue = Promise.resolve();
+const syncPageScripts = () => (scriptQueue = scriptQueue.then(async () => {
+  const { removedSites = [] } = await chrome.storage.local.get({ removedSites: [] });
+  const wanted = [];
+  if (removedSites.length) {
+    wanted.push({
+      id: 'pab-1-off',
+      js: ['off-flag.js'],
+      matches: removedSites.flatMap(d => [`*://${d}/*`, `*://*.${d}/*`]),
+      runAt: 'document_start', allFrames: true, world: 'MAIN',
+    });
+  }
+  wanted.push({
+    id: 'pab-2-main',
+    js: ['sites.js', 'nopopup.js'],
+    matches: ['<all_urls>'],
+    runAt: 'document_start', allFrames: true, world: 'MAIN', matchOriginAsFallback: true,
+  });
+  const current = (await chrome.scripting.getRegisteredContentScripts()).map(s => s.id);
+  if (current.length) await chrome.scripting.unregisterContentScripts({ ids: current });
+  await chrome.scripting.registerContentScripts(wanted);
+}).catch(console.error));
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes.removedSites) syncPageScripts();
+});
+chrome.runtime.onStartup.addListener(() => syncPageScripts());
 
 // Update feed configuration
 const REMOTE_AD_FEED = 'https://pgl.yoyo.org/adservers/serverlist.php?hostformat=nohtml&showintro=0&mimetype=plaintext';
@@ -150,7 +181,7 @@ if (isSafari) {
 
   syncSafari();
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && changes.extraSites) syncSafari();
+    if (area === 'local' && (changes.extraSites || changes.removedSites)) syncSafari();
   });
 } else {
   const onSite = async url => {
@@ -237,6 +268,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Initialization on install/startup
 chrome.runtime.onInstalled.addListener(async () => {
+  syncPageScripts();
   const stored = await chrome.storage.local.get(['lastUpdated', 'adDomainsCount']);
   if (!stored.lastUpdated) {
     // Seed initial ad rules immediately from built-in offline database

@@ -8,7 +8,8 @@
     "webNavigation",
     "storage",
     "alarms",
-    "activeTab"
+    "activeTab",
+    "scripting"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -42,20 +43,6 @@
     ]
   },
   "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "sites.js",
-        "nopopup.js"
-      ],
-      "world": "MAIN",
-      "run_at": "document_start",
-      "all_frames": true,
-      "match_about_blank": true,
-      "match_origin_as_fallback": true
-    },
     {
       "matches": [
         "<all_urls>"
