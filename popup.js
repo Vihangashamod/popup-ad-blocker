@@ -153,6 +153,20 @@ toggleCurrentSiteBtn.addEventListener('click', async () => {
   refreshActiveSiteWidget();
 });
 
+// Button that opens a site in a new tab
+const makeOpenBtn = (site) => {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn-open';
+  btn.textContent = '↗';
+  btn.title = `Open ${site}`;
+  btn.addEventListener('click', () => {
+    chrome.tabs.create({ url: `https://${site}/` });
+    window.close();
+  });
+  return btn;
+};
+
 // Render Sites Lists
 const renderBuiltin = (filter = '') => {
   builtinList.innerHTML = '';
@@ -164,7 +178,7 @@ const renderBuiltin = (filter = '') => {
     const span = document.createElement('span');
     span.className = 'site-name';
     span.textContent = site;
-    li.appendChild(span);
+    li.append(span, makeOpenBtn(site));
     builtinList.appendChild(li);
   }
 };
@@ -194,7 +208,10 @@ const renderExtra = (extra, filter = '') => {
       refreshActiveSiteWidget();
     });
 
-    li.append(span, removeBtn);
+    const actions = document.createElement('span');
+    actions.className = 'site-actions';
+    actions.append(makeOpenBtn(site), removeBtn);
+    li.append(span, actions);
     extraList.append(li);
   }
 };

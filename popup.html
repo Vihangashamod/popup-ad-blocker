@@ -350,6 +350,18 @@
     transition: color 0.2s;
   }
   .btn-remove:hover { color: var(--danger); }
+  .site-actions { display: inline-flex; align-items: center; gap: 2px; flex: none; }
+  .btn-open {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 0 5px;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+  }
+  .btn-open:hover { color: var(--primary); background: rgba(59, 130, 246, 0.12); }
   .empty-msg {
     text-align: center;
     padding: 12px;
