@@ -67,7 +67,7 @@ There are two easy ways to add protected sites:
   **Restore removed built-in sites** brings them all back; adding one again in the form restores it.
 
 ### Option B: Built-in Defaults (`sites.js`)
-- Pre-populated with 90+ popular streaming, anime, sports, and video hosting domains (`nunflix.kim`, `cineby.rocks`, `vidsrc.to`, `soap2day`, `aniwatch`, `streameast`, `lookmovie`, etc.).
+- Pre-populated with 48 film streaming sites. Video players embedded in these sites are protected too.
 - You can add domains to `sites.js` and click **"Copy full list for sites.js"** in the popup to export your combined list.
 
 ---
@@ -97,7 +97,7 @@ The `safari/` directory contains the native Xcode project for packaging the exte
 |---|---|
 | `manifest.json` | Manifest V3 extension definition with declarativeNetRequest, activeTab, storage, and alarms permissions |
 | `background.js` | Service worker managing session/dynamic declarative rules, list updater engine, and statistics |
-| `sites.js` | Default array of 90+ protected streaming and video hoster domains |
+| `sites.js` | Default list of 48 protected film streaming sites |
 | `default-ad-domains.js` | Offline database of 3,600+ curated ad and tracker domains |
 | `rules.json` | Static declarativeNetRequest rules for persistent domain and regex blocking |
 | `nopopup.js` | Main-world content script neutralizing `window.open`, intercepting sneaky links, and removing click traps |
